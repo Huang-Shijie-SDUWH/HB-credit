@@ -10,7 +10,7 @@
     "postcss": true,
     "preloadBackgroundData": false,
     "minified": true,
-    "newFeature": false,
+    "newFeature": true,
     "coverView": true,
     "nodeModules": false,
     "autoAudits": false,
@@ -40,14 +40,14 @@
     "minifyWXSS": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.14.1",
+  "libVersion": "2.7.1",
   "appid": "wx874ca4fe7e51b65b",
-  "projectname": "HB-credit_dev",
+  "projectname": "海贝分咨询小助手",
   "debugOptions": {
     "hidedInDevtools": []
   },
-  "scripts": {},
-  "isGameTourist": false,
+  "simulatorType": "wechat",
+  "simulatorPluginLibVersion": {},
   "condition": {
     "search": {
       "list": []
@@ -56,12 +56,7 @@
       "list": []
     },
     "game": {
-      "list": []
-    },
-    "plugin": {
-      "list": []
-    },
-    "gamePlugin": {
+      "currentL": -1,
       "list": []
     },
     "miniprogram": {

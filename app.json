@@ -1,27 +1,12 @@
 {
-  "pages": [
-    "pages/index/index",
-    "pages/detail/detail"
-  ],
-  "window": {
-    "backgroundTextStyle": "light",
-    "backgroundColor": "#FAFAFA",
-    "navigationBarBackgroundColor": "#FAFAFA",
-    "navigationBarTitleText": "海贝分咨询小助手",
-    "navigationBarTextStyle": "black"
-  },
-  "plugins": {
-    "chatbot": {
-      "version": "1.2.10",
-      "provider": "wx8c631f7e9f2465e1"
-    },
-    "WechatSI": {
-      "version": "0.3.4",
-      "provider": "wx069ba97219f66d99"
-    }
-  },
-  "requiredBackgroundModes": [
-    "audio"
-  ],
-  "sitemapLocation": "sitemap.json"
+	"pages": [
+		"pages/index/index"
+	],
+	"window": { 
+		"backgroundTextStyle": "light",
+		"navigationBarBackgroundColor": "#fff",
+		"navigationBarTitleText": "海贝分咨询小助手",
+		"navigationBarTextStyle": "black"
+	},
+	"sitemapLocation": "sitemap.json"
 }

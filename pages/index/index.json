@@ -1,5 +1,7 @@
 {
-  "usingComponents": {
-    "chat": "plugin://chatbot/chat"
-  }
+	"usingComponents": {},
+	"backgroundColor": "#ededed",
+	"backgroundTextStyle": "light",
+	"navigationBarBackgroundColor": "#fcfcfc",
+	"navigationBarTextStyle": "black"
 }

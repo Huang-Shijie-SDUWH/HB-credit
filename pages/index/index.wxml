@@ -1,3 +1,41 @@
-<view style="height: 100vh">
-    <chat/>
+<view class='container'>
+  <view class='chatGroup'>
+    <!-- 对话框 -->
+    <scroll-view scroll-y style="height:{{ viewHeight }}rpx; " bindscroll="scroll" scroll-with-animation='{{ isAnimation }}' scroll-into-view="{{ toView }}" >
+			<view class='chatWrap'>
+				<!-- 描述提示信息 -->
+				<view class='chatLabel auto'>
+					<image class='avatar' src='{{ avatarAuto }}'></image>
+					<view class='articleBox'><text>{{ serviceMsg }}</text></view>
+				</view>
+				<!-- 循环: 问题&回答 -->
+				<view wx:for='{{ chatDataArray }}' wx:key="index">
+					<!-- 问题 -->
+					<view class='chatLabel'>
+						<view class='avatar'><open-data type="userAvatarUrl"></open-data></view>
+						<view class='articleBox'>{{ item.useMsg }}</view>
+					</view>
+					<!-- 回答 -->
+					<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
+						<image class='avatar' src='{{ avatarAuto }}'></image>
+						<view class='articleBox'>{{ item.serviceMsg }}</view>
+					</view>
+				</view>
+			</view>
+			<view id="toFooter"></view>
+    </scroll-view>
+
+    <!-- 回复框 -->
+		<view class='chatFooterGroup' id='footerBtnGroup'>
+			<form bindsubmit="formSubmit">
+					<view class='textInputBox'>
+							<input class="textInput" value='{{ useMsg }}' name="useMsg" cursor-spacing="20" placeholder="聊点什么吧" placeholder-style="color:#999;" bindinput="bindInputValue" />
+					</view>
+					<view class='sendMsgBox'>
+						<button class='sendBtn {{ !canSend ? "gray" : "" }}' form-type="submit">></button>
+					</view>
+			</form>
+		</view>
+
+  </view>
 </view>
