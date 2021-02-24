@@ -1,0 +1,18 @@
+<l-toast />
+  <view class="tab-content">
+    <content-title name="{{title}}" describe="{{describe}}" />
+    <l-form name="form" l-form-btn-class="l-form-btn-class" bind:linsubmit="submit">
+      <l-form-item label="{{formtitle}}" name="title">
+        <l-input id="title" value="{{form.title}}" hide-label show-row="{{false}}" />
+      </l-form-item>
+      <l-form-item label="{{formdetail}}" name="detail">
+        <l-textarea border="{{false}}" id="detail" value="{{form.detail}}" />
+      </l-form-item>
+      <view slot="submit">
+        <l-button>提交</l-button>
+      </view>
+      <view slot="reset">
+        <l-button type="default" plain>重置</l-button>
+      </view>
+    </l-form>
+  </view>

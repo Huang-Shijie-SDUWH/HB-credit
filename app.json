@@ -1,12 +1,20 @@
 {
-	"pages": [
-		"pages/index/index"
-	],
-	"window": { 
-		"backgroundTextStyle": "light",
-		"navigationBarBackgroundColor": "#fff",
-		"navigationBarTitleText": "海贝分咨询小助手",
-		"navigationBarTextStyle": "black"
-	},
-	"sitemapLocation": "sitemap.json"
+  "pages": [
+    "pages/index/index",
+    "pages/feedback/feedback",
+    "pages/feedback/about/about",
+    "pages/feedback/form/form",
+    "pages/detail/detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "海贝分咨询小助手",
+    "navigationBarTextStyle": "black"
+  },
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {
+    "content-title": "/components/content-title/index",
+    "content-card": "/components/content-card/index"
+  }
 }

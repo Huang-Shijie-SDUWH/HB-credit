@@ -1,7 +1,14 @@
 {
-	"usingComponents": {},
+	"usingComponents": {
+		"l-capsule-bar":"/lin-ui-demo/miniprogram_npm/lin-ui/capsule-bar/index",
+		"l-card":"/lin-ui-demo/miniprogram_npm/lin-ui/card/index",
+		"l-input":"/lin-ui-demo/miniprogram_npm/lin-ui/input/index",
+		"l-icon":"/lin-ui-demo/miniprogram_npm/lin-ui/icon/index",
+		"l-button":"/lin-ui-demo/miniprogram_npm/lin-ui/button/index",
+    "l-transition":"/lin-ui-demo/miniprogram_npm/lin-ui/transition/index",
+		"l-toast":"/lin-ui-demo/miniprogram_npm/lin-ui/toast/index"
+	},
 	"backgroundColor": "#ededed",
 	"backgroundTextStyle": "light",
-	"navigationBarBackgroundColor": "#fcfcfc",
-	"navigationBarTextStyle": "black"
+	"navigationStyle":"custom"
 }

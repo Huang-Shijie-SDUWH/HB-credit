@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "l-tab-bar": "/lin-ui-demo/miniprogram_npm/lin-ui/tab-bar/index"
+  }
+}

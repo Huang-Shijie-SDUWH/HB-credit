@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "海贝分小助手反馈中心",
+	"navigationStyle":"custom",
+	"navigationBarBackgroundColor": "#fcfcfc",
+	"navigationBarTextStyle": "black",
+  "usingComponents": {
+		"l-capsule-bar":"/lin-ui-demo/miniprogram_npm/lin-ui/capsule-bar/index",
+    "content-title":"/components/content-title/index",
+		"l-list": "/lin-ui-demo/miniprogram_npm/lin-ui/list",
+		"content-card":"/components/content-card/index"
+  }
+}

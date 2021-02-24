@@ -1,0 +1,17 @@
+{
+  "navigationBarTitleText": "海贝分小助手反馈中心",
+	"navigationBarBackgroundColor": "#fcfcfc",
+	"navigationBarTextStyle": "black",
+  "usingComponents": {
+		"l-capsule-bar":"/lin-ui-demo/miniprogram_npm/lin-ui/capsule-bar/index",
+    "content-title":"/components/content-title/index",
+    "l-list": "/lin-ui-demo/miniprogram_npm/lin-ui/list/index",
+    "l-form": "/lin-ui-demo/miniprogram_npm/lin-ui/form/index",
+    "l-form-item": "/lin-ui-demo/miniprogram_npm/lin-ui/form-item/index",
+    "l-button": "/lin-ui-demo/miniprogram_npm/lin-ui/button/index",
+    "l-textarea": "/lin-ui-demo/miniprogram_npm/lin-ui/textarea/index",
+    "l-input": "/lin-ui-demo/miniprogram_npm/lin-ui/input/index",
+    "l-toast":"/lin-ui-demo/miniprogram_npm/lin-ui/toast/index",
+    "l-icon":"/lin-ui-demo/miniprogram_npm/lin-ui/icon/index"
+  }
+}

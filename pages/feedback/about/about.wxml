@@ -1,0 +1,40 @@
+<l-tab-bar text-color="#bbbbbb" list="{{list}}" />
+
+<view class='container'>
+  <view class='logo-container'>
+    <image class='logo-img' src='/imgs/1.png'></image>
+    <view class="version-container">
+      <image src="https://img.shields.io/npm/v/lin-ui.svg" class="version-img"></image>
+      <image src="/imgs/version.svg" class="download-img"></image>
+    </view>
+  </view>
+  <view class='address-container'>
+    <view class='dot' />
+    <view class='doc-container' bindtap='copyLink' data-link="http://doc.mini.talelin.com">
+      <text class='doc-txt'>Lin-UI 文档</text>
+      <text class='address'>http://doc.mini.talelin.com</text>
+    </view>
+  </view>
+  <view class='address-container'>
+    <view class='dot' />
+    <view class='doc-container' bindtap='copyLink' data-link="https://github.com/Talelin/lin-ui">
+      <text class='doc-txt'>项目Github地址</text>
+      <text class='address'>https://github.com/Huang-Shijie-SDUWH/HB-credit</text>
+    </view>
+  </view>
+  <view class='attribute-container'>
+    <view class='attribute-title'>开发人员（主要职责）</view>
+    <view class='attribute-item'>
+      <view class='attribute-code-container'>
+        <view class='code-circle'></view>
+        <view class='code-name'>程序</view>
+        <view class='coder'>黄施捷</view>
+      </view>
+      <view class='attribute-code-container'>
+        <view class='code-circle'></view>
+        <view class='code-name'>设计及文档</view>
+        <view class='coder'>罗宇轩</view>
+      </view>
+    </view>
+  </view>
+</view>

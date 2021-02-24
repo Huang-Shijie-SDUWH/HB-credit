@@ -1,41 +1,94 @@
-<view class='container'>
-  <view class='chatGroup'>
-    <!-- 对话框 -->
-    <scroll-view scroll-y style="height:{{ viewHeight }}rpx; " bindscroll="scroll" scroll-with-animation='{{ isAnimation }}' scroll-into-view="{{ toView }}" >
-			<view class='chatWrap'>
-				<!-- 描述提示信息 -->
-				<view class='chatLabel auto'>
-					<image class='avatar' src='{{ avatarAuto }}'></image>
-					<view class='articleBox'><text>{{ serviceMsg }}</text></view>
-				</view>
-				<!-- 循环: 问题&回答 -->
-				<view wx:for='{{ chatDataArray }}' wx:key="index">
-					<!-- 问题 -->
-					<view class='chatLabel'>
-						<view class='avatar'><open-data type="userAvatarUrl"></open-data></view>
-						<view class='articleBox'>{{ item.useMsg }}</view>
-					</view>
-					<!-- 回答 -->
-					<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
+<!-- 胶囊栏 -->
+<l-capsule-bar capsule-left-icon-width="38" capsule-left-icon-height="38" capsule-right-icon-width="38"
+	capsule-right-icon-height="38" capsule-left-icon-path="/imgs/xitonggongneng.png"
+	capsule-right-icon-path="/imgs/feedback.png" title="海贝分咨询小助手" bg-color="#3963BC" status-bar-color="#3963BC"
+	title-bar-color="white" hidden-title="true" bind:linlefttap="jumptodoc" bind:linrighttap="jumptofb"
+	disable-back="true" disable-home="true">
+
+
+	<!-- 语音提示框 -->
+	<l-toast show="{{speakingtag}}" title="正在录音{{speak_time<10? '00:0'+speak_time:'00:'+speak_time}}" icon="loading"
+		duration="2000" />
+
+	<!-- 容器头部 -->
+	<view class='container'>
+		<view class='chatGroup'>
+
+
+			<!-- 对话框，利用scroll-view进行滚动显示 -->
+			<scroll-view scroll-y style="height:{{ viewHeight }}rpx; " bindscroll="scroll"
+				scroll-with-animation='{{ isAnimation }}' scroll-into-view="{{ toView }}">
+				<view class='chatWrap'>
+
+
+					<!-- 提示信息 -->
+					<view class='chatLabel auto'>
 						<image class='avatar' src='{{ avatarAuto }}'></image>
-						<view class='articleBox'>{{ item.serviceMsg }}</view>
+						<view class='articleBox'><text>{{ serviceMsg }}</text></view>
 					</view>
+
+
+					<!-- 循环: 问题&回答 -->
+					<view wx:for='{{ chatDataArray }}' wx:key="index">
+
+
+						<!-- 问题 -->
+						<view class='chatLabel'>
+							<view class='avatar'>
+								<open-data type="userAvatarUrl"></open-data>
+							</view>
+							<view class='articleBox'>{{ item.userMsg }}</view>
+						</view>
+
+
+						<!-- 回答 -->
+						<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
+							<image class='avatar' src='{{ avatarAuto }}'></image>
+							<view class='articleBox'>{{ item.serviceMsg }}</view>
+						</view>
+
+
+					</view>
+				</view>
+				<view id="toFooter" style="height:{{fotterBottom}}px"></view>
+			</scroll-view>
+
+
+			<!-- 打字回复框 -->
+			<view wx:if="{{!speak}}">
+				<view style="bottom:{{fotterBottom}}px" class='chatFooterGroup' id='footerBtnGroup'>
+					<l-input showRow="true" bind:linfocus="keyboardprocess" bind:linblur="keyboardprocess" placeholder="请输入您的问题"
+						value='{{ userMsg }}' name="useMsg" bind:lininput="bindInputValue" label-width="100">
+						<view slot="left" bindtap="changespeaktag">
+							<l-icon name='speak' l-class='iconfont' />
+						</view>
+						<view slot="right">
+							<l-button bg-color='{{!canSend? "gray" : ""}}' shape="circle" bindtap="sendMsg" type="default"
+								size="mini">发送</l-button>
+						</view>
+					</l-input>
 				</view>
 			</view>
-			<view id="toFooter"></view>
-    </scroll-view>
 
-    <!-- 回复框 -->
-		<view class='chatFooterGroup' id='footerBtnGroup'>
-			<form bindsubmit="formSubmit">
-					<view class='textInputBox'>
-							<input class="textInput" value='{{ useMsg }}' name="useMsg" cursor-spacing="20" placeholder="聊点什么吧" placeholder-style="color:#999;" bindinput="bindInputValue" />
-					</view>
-					<view class='sendMsgBox'>
-						<button class='sendBtn {{ !canSend ? "gray" : "" }}' form-type="submit">></button>
-					</view>
-			</form>
+
+			<!-- 按住说话 -->
+			<view wx:else>
+				<view class='chatFooterGroup' id='footerBtnGroup'>
+					<l-input l-class="display:block" :adjust-position="false" l-input-class="hiddeninput" placeholder-style="text-align:center"
+						value='{{ useMsg }}' name="useMsg" bind:lininput="bindInputValue" label-width="100">
+						<view slot="left" bindtap="changespeaktag">
+							<l-icon name='keyboard' l-class='iconfont' size="50" />
+						</view>
+						<view slot="right">
+							<l-button shape="circle" width="620" bindlongtap='touchdown' bindtouchend="touchup">{{record_name}}
+							</l-button>
+						</view>
+					</l-input>
+				</view>
+			</view>
+
+
+			<!-- 容器及胶囊栏结尾 -->
 		</view>
-
-  </view>
-</view>
+	</view>
+</l-capsule-bar>

@@ -1,0 +1,17 @@
+{
+  "navigationBarTitleText": "海贝分政策详细文档",
+	"navigationStyle":"custom",
+	"navigationBarBackgroundColor": "#fcfcfc",
+	"navigationBarTextStyle": "black",
+  "usingComponents": {
+    "mytree": "/components/mytree/mytree",
+    "l-collapse":"/lin-ui-demo/miniprogram_npm/lin-ui/collapse/index",
+    "l-collapse-item":"/lin-ui-demo/miniprogram_npm/lin-ui/collapse-item/index",
+		"l-capsule-bar":"/lin-ui-demo/miniprogram_npm/lin-ui/capsule-bar/index",
+    "content-card":"/components/content-card/index",
+    "content-title":"/components/content-title/index",
+		"l-tabs": "/lin-ui-demo/miniprogram_npm/lin-ui/tabs",
+		"l-tabpanel": "/lin-ui-demo/miniprogram_npm/lin-ui/tabpanel",
+		"l-card": "/lin-ui-demo/miniprogram_npm/lin-ui/card"
+  }
+}

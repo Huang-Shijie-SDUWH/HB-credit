@@ -1,0 +1,13 @@
+<l-capsule-bar capsule-left-icon-width="38" capsule-left-icon-height="38"
+  capsule-right-icon-width="38" capsule-right-icon-height="38" capsule-left-icon-path="/imgs/siri.png"
+  capsule-right-icon-path="/imgs/doc_b.png" title="反馈中心" bg-color="#3963BC" status-bar-color="#3963BC"
+  title-bar-color="white" hidden-title="true" bind:linlefttap="jumptosiri" bind:linrighttap="jumptodoc"
+  disable-back="true" disable-home="true">
+  <view class="tab-content">
+    <content-title name="{{title}}" describe="{{describe}}"/>
+    <l-list title="使用问题" icon="history" icon-color="#00171F" bind:lintap="quesiton"/>
+    <l-list title="帮助改进" icon="to-top" icon-color="#003459" bind:lintap="help"/>
+    <l-list title="投诉建议" icon="warning" icon-color="#007EA7" bind:lintap="advice"/>
+    <l-list title="关于我们" icon="help" icon-color="#00A8E8" tag-content="开发者" tag-position="right" url="/pages/feedback/about/about"/>
+  </view>
+</l-capsule-bar>
