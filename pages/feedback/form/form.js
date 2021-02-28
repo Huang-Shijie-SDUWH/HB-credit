@@ -1,5 +1,5 @@
 const filesystemmanager = wx.getFileSystemManager()
-var uploadfile = require('../../../utils/uploadImg')
+var uploadfile = require('../../../utils/upload')
 Page({
   data: {
     title: "表单页面",

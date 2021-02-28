@@ -1,5 +1,6 @@
 import deviceUtil from "../../lin-ui-demo/miniprogram_npm/lin-ui/utils/device-util"
 var recorderManager = wx.getRecorderManager()
+var fs = wx.getFileSystemManager()
 Page({
 	data: {
 		avatarAuto: '/imgs/1.png', // 系统头像
@@ -26,17 +27,24 @@ Page({
 		speakingtag: false,
 		num: 1,
 		formFile: '',
-		asrurl: 'http://mylifemeaning.cn:8888/asr',//语音识别api接口地址
-		signatureurl: 'http://mylifemeaning.cn:8888/signature',
-		fotterBottom:0
+		asrurl: 'https://mylifemeaning.cn/soket_server/get_token',//语音识别api接口地址
+		signatureurl: 'https://mylifemeaning.cn/soket_server/get_signature',
+		fotterBottom: 0,
+		token: ''
 	},
-	getsignature: function(e) {
+
+	//获取微信对话平台凭证
+	getsignature: function (e) {
 		var that = this;
 		wx.request({
 			url:  that.data.signatureurl,
-			method: 'POST',
+			method: 'GET',
 			success: function (res) {
-				that.data.signature = res.data.signature;
+				// console.log(res)
+				const signature = res.data.signature;
+				that.setData({
+					signature
+				})
 			},
 			fail: function () {
 				console.log("getsignature failed!")
@@ -44,9 +52,28 @@ Page({
 		})
 	},
 
+		//获取百度云平台凭证
+		gettoken: function (e) {
+			var that = this;
+			wx.request({
+				url:  that.data.asrurl,
+				method: 'GET',
+				success: function (res) {
+					const token = res.data.access_token;
+					that.setData({
+						token
+					})
+					// console.log(res.data)
+				},
+				fail: function () {
+					console.log("gettoken failed!")
+				}
+			})
+		},
+
 	// 监听 滑动事件
 	scroll(e) {
-		console.log(e)
+		// console.log(e)
 	},
 
 	// 处理 滑动到底部 动效
@@ -172,23 +199,22 @@ Page({
 		var that = this;
 		recorderManager.stop();
 		recorderManager.onStop((res) => {
-			wx.uploadFile({
-        url: that.data.asrurl,
-        filePath: res.tempFilePath,
-        name: 'file',
-        success:function(res){
-						// console.log(res)
-            // console.log(JSON.parse(res.data).result)
-						that.sendspeakingMsg(JSON.parse(res.data).result)
-        },
-        fail:function(err){
-            console.log(err)
-        }
-    })
 			console.log('停止录音', res.tempFilePath)
+			const FilePath = res.tempFilePath
+			wx.getFileSystemManager().readFile({ //读取文件
+				filePath: res.tempFilePath,
+				encoding: 'utf-8',
+				success: res => {
+					// var data = JSON.parse(res.data);//将JSON字符串转换为JSON对象
+					console.log(res.data)
+					console.log(res.data.length)
+					that.ASRRequest(FilePath,res.data.length)
+				},
+				fail: console.error
+			})
+			// that.sendspeakingMsg(JSON.parse(res.data).result)
 		})
 	},
-
 	// 监听 底部输入框
 	bindInputValue: function (e) {
 		const userMsg = e.detail.value;
@@ -308,7 +334,7 @@ Page({
 		query.selectViewport().scrollOffset();
 		query.exec(function (res) {
 			const _h = res[0].height * 2 - 15;
-			console.log(_h)
+			// console.log(_h)
 			let windowHeight = wx.getSystemInfoSync().windowHeight;
 			let windowWidth = wx.getSystemInfoSync().windowWidth;
 			const viewHeight = parseInt(750 * (windowHeight - _h) / windowWidth);
@@ -325,6 +351,7 @@ Page({
 		const that = this;
 		that.getBtnHeight(); // 处理 设备可显示高度
 		that.getsignature();
+		that.gettoken();
 	},
 
 	//准备完毕
@@ -348,5 +375,57 @@ Page({
 		setTimeout(() => {
 			that.tapMove();
 		}, 10);
-	}
+	},
+	ASRRequest: function (tempFilePath,len) { // corpus是要发送的对话；arg是回调方法
+	var that = this;
+	// // appkey
+	// var appkey = that.globalData.NLPAppkey;
+	// // appsecret
+	// var appSecret = that.globalData.NLPAppSecret;
+	var api = "nli";
+	const LM_ID = 12681;
+	// var timestamp = new Date().getTime();
+	var voice0 = fs.readFileSync(tempFilePath, "base64");
+	// console.log("[Console log]voice:" + voice0);
+	// console.log("[Console log]len:" + len);
+	var rqJson = {
+		'dev_pid': 80001,
+		"lm_id": LM_ID,
+		'format': 'pcm',
+		'rate': 16000,
+		'token': that.data.token,
+		'cuid': 'humor',
+		'channel': 1,
+		'len': len,
+		'speech': voice0
+	};
+	var rq = JSON.stringify(rqJson);
+	// console.log(rq);
+	var ASRUrl = "https://vop.baidu.com/pro_api";
+	// cusid是用来实现上下文的，可以自己随意定义内容，要够长够随机
+	// var cusid = that.globalData.NLPCusid;
+	console.log("[Console log]:ASRRequest(),URL:" + ASRUrl);
+	wx.request({
+		url: ASRUrl,
+		data: rq,
+		header: { 'content-type': 'application/json' },
+		method: 'POST',
+		success: function (res) {
+			// var resData = res.data;
+			console.log("[Console log]:ASTRequest() success...");
+			console.log(res)
+			that.sendspeakingMsg(res.data.result[0])
+			// var nli = JSON.stringify(resData);
+			// 回调函数，解析数据
+		},
+		fail: function (res) {
+			console.log("[Console log]:ASRRequest() failed...");
+			console.error("[Console log]:Error Message:" + res.errMsg);
+		},
+		complete: function () {
+			console.log("[Console log]:ASRRequest() complete...");
+		}
+	})
+}
+
 })
