@@ -80,7 +80,7 @@
 							<l-icon name='keyboard' l-class='iconfont' size="50" />
 						</view>
 						<view slot="right">
-							<l-button shape="circle" width="620" bindlongtap='touchdown' bindtouchend="touchup">{{record_name}}
+							<l-button shape="circle" width="620" bindtouchstart='touchdown' bindtouchend="touchup">{{record_name}}
 							</l-button>
 						</view>
 					</l-input>

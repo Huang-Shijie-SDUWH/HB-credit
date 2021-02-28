@@ -201,14 +201,14 @@ Page({
 		recorderManager.onStop((res) => {
 			console.log('停止录音', res.tempFilePath)
 			const FilePath = res.tempFilePath
-			wx.getFileSystemManager().readFile({ //读取文件
+			fs.readFile({ //读取文件
 				filePath: res.tempFilePath,
-				encoding: 'utf-8',
 				success: res => {
 					// var data = JSON.parse(res.data);//将JSON字符串转换为JSON对象
-					console.log(res.data)
-					console.log(res.data.length)
-					that.ASRRequest(FilePath,res.data.length)
+					// console.log(res.data)
+					// console.log(res.data.length)
+					console.log(res.data.byteLength)
+					that.ASRRequest(FilePath,res.data.byteLength)
 				},
 				fail: console.error
 			})
@@ -329,15 +329,16 @@ Page({
 	// 处理 设备可显示高度
 	getBtnHeight: function () {
 		const that = this,
-			query = wx.createSelectorQuery();
+		query = wx.createSelectorQuery();
 		query.select('#footerBtnGroup').boundingClientRect();
 		query.selectViewport().scrollOffset();
 		query.exec(function (res) {
-			const _h = res[0].height * 2 - 15;
+			const _h = res[0].height;
 			// console.log(_h)
 			let windowHeight = wx.getSystemInfoSync().windowHeight;
 			let windowWidth = wx.getSystemInfoSync().windowWidth;
-			const viewHeight = parseInt(750 * (windowHeight - _h) / windowWidth);
+			const navigationbarheight = deviceUtil.getNavigationBarHeight();
+			const viewHeight = parseInt(750 * (windowHeight - _h -15) / windowWidth - navigationbarheight);
 			// console.log(viewHeight)
 			that.setData({
 				viewHeight
@@ -376,18 +377,12 @@ Page({
 			that.tapMove();
 		}, 10);
 	},
+
 	ASRRequest: function (tempFilePath,len) { // corpus是要发送的对话；arg是回调方法
 	var that = this;
-	// // appkey
-	// var appkey = that.globalData.NLPAppkey;
-	// // appsecret
-	// var appSecret = that.globalData.NLPAppSecret;
 	var api = "nli";
 	const LM_ID = 12681;
-	// var timestamp = new Date().getTime();
 	var voice0 = fs.readFileSync(tempFilePath, "base64");
-	// console.log("[Console log]voice:" + voice0);
-	// console.log("[Console log]len:" + len);
 	var rqJson = {
 		'dev_pid': 80001,
 		"lm_id": LM_ID,
@@ -400,10 +395,7 @@ Page({
 		'speech': voice0
 	};
 	var rq = JSON.stringify(rqJson);
-	// console.log(rq);
 	var ASRUrl = "https://vop.baidu.com/pro_api";
-	// cusid是用来实现上下文的，可以自己随意定义内容，要够长够随机
-	// var cusid = that.globalData.NLPCusid;
 	console.log("[Console log]:ASRRequest(),URL:" + ASRUrl);
 	wx.request({
 		url: ASRUrl,
@@ -411,12 +403,9 @@ Page({
 		header: { 'content-type': 'application/json' },
 		method: 'POST',
 		success: function (res) {
-			// var resData = res.data;
 			console.log("[Console log]:ASTRequest() success...");
 			console.log(res)
-			that.sendspeakingMsg(res.data.result[0])
-			// var nli = JSON.stringify(resData);
-			// 回调函数，解析数据
+			// that.sendspeakingMsg(res.data.result[0])
 		},
 		fail: function (res) {
 			console.log("[Console log]:ASRRequest() failed...");
