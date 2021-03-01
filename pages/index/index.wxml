@@ -24,7 +24,7 @@
 					<!-- 提示信息 -->
 					<view class='chatLabel auto'>
 						<image class='avatar' src='{{ avatarAuto }}'></image>
-						<view class='articleBox'><text>{{ serviceMsg }}</text></view>
+						<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{serviceMsg}}" class='articleBox'><text>{{ serviceMsg }}</text></view>
 					</view>
 
 
@@ -44,7 +44,7 @@
 						<!-- 回答 -->
 						<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
 							<image class='avatar' src='{{ avatarAuto }}'></image>
-							<view class='articleBox'>{{ item.serviceMsg }}</view>
+							<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}" class='articleBox'>{{ item.serviceMsg }}</view>
 						</view>
 
 

@@ -1,6 +1,7 @@
 import deviceUtil from "../../lin-ui-demo/miniprogram_npm/lin-ui/utils/device-util"
 var recorderManager = wx.getRecorderManager()
 var fs = wx.getFileSystemManager()
+const plugin = requirePlugin('WechatSI');
 Page({
 	data: {
 		avatarAuto: '/imgs/1.png', // 系统头像
@@ -17,23 +18,23 @@ Page({
 		speak_time: 10,
 		capsuleBarHeight: deviceUtil.getNavigationBarHeight(),
 		speak_time: 0,
-		// 获取到当前录音开始时间
-		start_time: "",
-		record_name: "按住 说话",
-		// 录制最终时间
-		speak_time: 0,
-		//存储计时器
-		setInter: '',
+		start_time: "", // 获取到当前录音开始时间
+		record_name: "按住 说话", 
+		speak_time: 0, // 录制最终时间
+		setInter: '', // 存储计时器
 		speakingtag: false,
 		num: 1,
 		formFile: '',
 		asrurl: 'https://mylifemeaning.cn/soket_server/get_token',//语音识别api接口地址
 		signatureurl: 'https://mylifemeaning.cn/soket_server/get_signature',
 		fotterBottom: 0,
-		token: ''
+		token: '',
+		src:'',
+		playingtag: false,
+		canspeaktag: 5
 	},
 
-	//获取微信对话平台凭证
+	// 获取 微信对话平台凭证
 	getsignature: function (e) {
 		var that = this;
 		wx.request({
@@ -52,24 +53,24 @@ Page({
 		})
 	},
 
-		//获取百度云平台凭证
-		gettoken: function (e) {
-			var that = this;
-			wx.request({
-				url:  that.data.asrurl,
-				method: 'GET',
-				success: function (res) {
-					const token = res.data.access_token;
-					that.setData({
-						token
-					})
-					// console.log(res.data)
-				},
-				fail: function () {
-					console.log("gettoken failed!")
-				}
-			})
-		},
+	// 获取 自训练语音识别平台凭证
+	gettoken: function (e) {
+		var that = this;
+		wx.request({
+			url:  that.data.asrurl,
+			method: 'GET',
+			success: function (res) {
+				const token = res.data.access_token;
+				that.setData({
+					token
+				})
+				// console.log(res.data)
+			},
+			fail: function () {
+				console.log("gettoken failed!")
+			}
+		})
+	},
 
 	// 监听 滑动事件
 	scroll(e) {
@@ -83,7 +84,7 @@ Page({
 		});
 	},
 
-	// 跳转到文档
+	// 跳转 到文档
 	jumptodoc() {
 		console.log("jump")
 		wx.redirectTo({
@@ -91,7 +92,7 @@ Page({
 		})
 	},
 
-	//跳转到反馈中心
+	// 跳转 到反馈中心
   jumptofb() {
 		console.log("jump")
 		wx.redirectTo({
@@ -106,48 +107,40 @@ Page({
 		})
 	},
 
-	// 手指按下
+	// 手指 按下语音按钮
 	touchdown: function (e) {
 		var that = this;
 		console.log('touchStart....')
-		wx.getSetting({
-			success(res) {
-				if (res.authSetting['scope.record']) { //检查是否授权录音
-					that.start(); //如果授权，开始录音
-					that.data.setInter = setInterval(
-						function () {
-							var speak_time = that.data.speak_time + 1;
-							that.setData({
-								speak_time: parseInt(speak_time),
-								record_name: "松开 发送",
-								speakingtag: true
-							});
-							console.log(speak_time)
+		that.start(); //如果授权，开始录音
+		that.data.setInter = setInterval(
+			function () {
+				var speak_time = that.data.speak_time + 1;
+				that.setData({
+					speak_time: speak_time,
+					record_name: "松开 发送",
+					speakingtag: true
+				});
+				console.log(speak_time)
 
-							if (that.data.speak_time >= 0 && that.data.speak_time <= 59) {
-								// that.start();
-							} else {
-								clearInterval(that.data.setInter);
-								// 获取到结束时间
-								that.stop();
-								that.setData({
-									speakingtag: false
-								})
-								wx.showToast({
-									title: '录音最长60S哦！',
-									duration: 2000,
-									icon: "none"
-								})
-							}
-						}, 1000);//一秒一次调用
+				if (that.data.speak_time >= 0 && that.data.speak_time <= 59) {
+					// that.start();
 				} else {
-					return;
+					clearInterval(that.data.setInter);
+					// 获取到结束时间
+					that.stop();
+					that.setData({
+						speakingtag: false
+					})
+					wx.showToast({
+						title: '录音最长60S哦！',
+						duration: 2000,
+						icon: "none"
+					})
 				}
-			}
-		})
+			}, 1000);//一秒一次调用
 	},
 
-	// 手指抬起  
+	// 手指 抬起
 	touchup: function () {
 		var that = this;
 		console.log("手指抬起了...", that.data.speak_time)
@@ -156,7 +149,6 @@ Page({
 		that.stop();
 		if (that.data.speak_time > 1) {
 			console.log(that.data.formFile)
-
 		} else {
 			wx.showToast({
 				title: '请重新录制',
@@ -208,6 +200,7 @@ Page({
 					// console.log(res.data)
 					// console.log(res.data.length)
 					console.log(res.data.byteLength)
+					if(res.data.byteLength<20000) return;
 					that.ASRRequest(FilePath,res.data.byteLength)
 				},
 				fail: console.error
@@ -215,6 +208,7 @@ Page({
 			// that.sendspeakingMsg(JSON.parse(res.data).result)
 		})
 	},
+	
 	// 监听 底部输入框
 	bindInputValue: function (e) {
 		const userMsg = e.detail.value;
@@ -230,7 +224,7 @@ Page({
 		}
 	},
 
-	// 发送 聊天信息 
+	// 发送 聊天信息
 	sendMsg: function (e) {
 		const that = this,
 			canSend = that.data.canSend;
@@ -270,6 +264,7 @@ Page({
 							chatDataArray: oldChatDataArray
 						});
 						that.tapMove(); // 执行第二次滑动 定位到底部
+						that.tts(serviceMsg);
 					}, 100);
 				},
 				fail: function (e) {
@@ -317,6 +312,7 @@ Page({
 						chatDataArray: oldChatDataArray
 					});
 					that.tapMove(); // 执行第二次滑动 定位到底部
+					that.tts(serviceMsg);
 				}, 100);
 			},
 			fail: function (e) {
@@ -338,7 +334,7 @@ Page({
 			let windowHeight = wx.getSystemInfoSync().windowHeight;
 			let windowWidth = wx.getSystemInfoSync().windowWidth;
 			const navigationbarheight = deviceUtil.getNavigationBarHeight();
-			const viewHeight = parseInt(750 * (windowHeight - _h -15) / windowWidth - navigationbarheight);
+			const viewHeight = parseInt(750 * (windowHeight - _h - 15) / windowWidth - navigationbarheight);
 			// console.log(viewHeight)
 			that.setData({
 				viewHeight
@@ -347,20 +343,36 @@ Page({
 		});
 	},
 
-	//加载时
-	onLoad: function (options) {
+	// 页面 加载时
+	onLoad: function () {
 		const that = this;
 		that.getBtnHeight(); // 处理 设备可显示高度
 		that.getsignature();
 		that.gettoken();
 	},
 
-	//准备完毕
+	// 页面 准备完毕
 	onReady: function () {
+		var that = this;
 		this.animation = wx.createAnimation(); // 创建动画。
+		this.innerAudioContext = wx.createInnerAudioContext();      
+		this.tts(this.data.serviceMsg)
+    this.innerAudioContext.onError(function (res) {
+      console.log(res);
+      wx.showToast({
+        title: '语音播放失败',
+        icon: 'none',
+      })
+		})
+		this.innerAudioContext.onEnded(function (res){
+			that.setData({
+				playingtag: false
+			})
+		}
+		)
 	},
 
-	//处理键盘弹起
+	// 处理 键盘弹起
 	keyboardprocess: function(e){
 		var that=this;
 		if(e.type=='linfocus'){
@@ -378,7 +390,8 @@ Page({
 		}, 10);
 	},
 
-	ASRRequest: function (tempFilePath,len) { // corpus是要发送的对话；arg是回调方法
+	// 自训练模型 语音识别
+	ASRRequest: function (tempFilePath,len) { 
 	var that = this;
 	var api = "nli";
 	const LM_ID = 12681;
@@ -405,7 +418,7 @@ Page({
 		success: function (res) {
 			console.log("[Console log]:ASTRequest() success...");
 			console.log(res)
-			// that.sendspeakingMsg(res.data.result[0])
+			that.sendspeakingMsg(res.data.result[0])
 		},
 		fail: function (res) {
 			console.log("[Console log]:ASRRequest() failed...");
@@ -415,6 +428,53 @@ Page({
 			console.log("[Console log]:ASRRequest() complete...");
 		}
 	})
-}
+	},
+	
+	// 前端 点击播放录音
+	taptoplay: function (event)
+	{
+		this.tts(event.currentTarget.dataset.detail)
+	},
+
+  // 语音合成
+  tts:function (content) {
+    var that = this;
+    plugin.textToSpeech({
+      lang: "zh_CN",
+      tts: true,
+      content: content,
+      success: function (res) {
+        // console.log(res);
+        console.log("succ tts", res.filename);
+        that.setData({
+					src: res.filename,
+					playingtag: true
+        })
+        that.begin();
+ 
+      },
+      fail: function (res) {
+        console.log("fail tts", res)
+      }
+    })
+  },
+  
+  // 播放语音
+  begin: function (e) {
+    if (this.data.src == '') {
+      console.log(暂无语音);
+      return;
+    }
+    this.innerAudioContext.src = this.data.src //设置音频地址
+    this.innerAudioContext.play(); //播放音频
+  },
+ 
+  // 结束播放
+  end: function (e) {
+    this.innerAudioContext.pause();//暂停音频
+		this.setData({
+			playingtag: false
+		})
+  },
 
 })
