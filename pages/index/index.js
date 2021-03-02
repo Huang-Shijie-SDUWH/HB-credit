@@ -410,7 +410,7 @@ Page({
 				if (that.data.hassendtag == true) {
 					clearInterval(that.data.setInter2);
 				}
-				if (waitting_time >= 5 && that.data.hassendtag == false) {
+				if (waitting_time >= 20 && that.data.hassendtag == false) {
 					that.setData({
 						showReminder: true
 					})
