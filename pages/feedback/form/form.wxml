@@ -2,6 +2,15 @@
   <view class="tab-content">
     <content-title name="{{title}}" describe="{{describe}}" />
     <l-form name="form" l-form-btn-class="l-form-btn-class" bind:linsubmit="submit">
+      <l-form-item label="性别：" name="title">
+        <l-input id="title" value="{{form.title}}" hide-label show-row="{{false}}" />
+      </l-form-item>
+      <l-form-item label="年龄：" name="title">
+        <l-input id="title" value="{{form.title}}" hide-label show-row="{{false}}" />
+      </l-form-item>
+      <l-form-item label="所在地区：" name="title">
+        <l-input id="title" value="{{form.title}}" hide-label show-row="{{false}}" />
+      </l-form-item>
       <l-form-item label="{{formtitle}}" name="title">
         <l-input id="title" value="{{form.title}}" hide-label show-row="{{false}}" />
       </l-form-item>

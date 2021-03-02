@@ -5,7 +5,7 @@
     <image class='logo-img' src='/imgs/1.png'></image>
     <view class="version-container">
       <image src="https://img.shields.io/npm/v/lin-ui.svg?style=flat-square" class="version-img"></image>
-      <image src="https://img.shields.io/badge/HB_credit-v1.0-green.svg?style=flat-square" class="download-img"></image>
+      <image src="https://img.shields.io/badge/HB_credit-v1.3-green.svg?style=flat-square" class="download-img"></image>
     </view>
   </view>
   <view class='address-container'>

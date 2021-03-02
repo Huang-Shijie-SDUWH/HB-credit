@@ -2,9 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/detail/detail",
-    "pages/feedback/about/about",
     "pages/feedback/feedback",
-    "pages/feedback/form/form"
+    "pages/feedback/form/form",
+    "pages/feedback/about/about"
   ],
   "window": {
     "backgroundTextStyle": "light",

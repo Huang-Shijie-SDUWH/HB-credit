@@ -10,6 +10,7 @@
 	<l-toast show="{{speakingtag}}" title="正在录音{{speak_time<10? '00:0'+speak_time:'00:'+speak_time}}" icon="loading"
 		duration="2000" />
 
+
 	<!-- 容器头部 -->
 	<view class='container'>
 		<view class='chatGroup'>
@@ -21,10 +22,30 @@
 				<view class='chatWrap'>
 
 
-					<!-- 提示信息 -->
+					<!-- 问候语 -->
 					<view class='chatLabel auto'>
 						<image class='avatar' src='{{ avatarAuto }}'></image>
-						<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{serviceMsg}}" class='articleBox'><text>{{ serviceMsg }}</text></view>
+						<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{serviceMsg}}" class='articleBox'><text>{{ serviceMsg }}</text>
+							<l-icon name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);"/>
+						</view>
+					</view>
+
+
+					<!-- 延时提示信息 -->
+					<view class='chatLabel auto' wx:if = "{{showReminder}}">
+						<image class='avatar' src='{{ avatarAuto }}'></image>
+						<view class='articleBox'>
+							<l-button style="position:absolute;right:140rpx;bottom:10rpx;" icon="wordchange" bindtap="wordchange" l-icon-class="iconfont" plain="true" size="mini">换一换</l-button>
+							<text> 一时想不到要问什么？ 那就先试试以下问题吧：
+
+							</text>
+							<view wx:for = "{{ReminderArray}}" wx:key="index">
+							<text class="highlight" bindtap="sendreminderMsg" data-detail="{{item}}">
+								· {{item}}
+							</text>
+							<text>\n\n</text>
+							</view>
+						</view>
 					</view>
 
 
@@ -44,7 +65,8 @@
 						<!-- 回答 -->
 						<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
 							<image class='avatar' src='{{ avatarAuto }}'></image>
-							<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}" class='articleBox'>{{ item.serviceMsg }}</view>
+							<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}" class='articleBox'>{{ item.serviceMsg }}
+							<l-icon name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);"/></view>
 						</view>
 
 

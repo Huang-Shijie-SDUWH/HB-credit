@@ -31,7 +31,11 @@ Page({
 		token: '',
 		src:'',
 		playingtag: false,
-		canspeaktag: 5
+		canspeaktag: 5,
+		waitting_time: 0,
+		showReminder: false,
+		hassendtag: false,
+		ReminderArray: []
 	},
 
 	// 获取 微信对话平台凭证
@@ -227,8 +231,11 @@ Page({
 	// 发送 聊天信息
 	sendMsg: function (e) {
 		const that = this,
-			canSend = that.data.canSend;
+		canSend = that.data.canSend;
 		if (canSend) {
+			that.setData({
+				hassendtag: true
+			})
 			let userMsg = that.data.userMsg,
 				chatDataArray = that.data.chatDataArray,
 				waitting = '正在处理...';
@@ -273,6 +280,10 @@ Page({
 				}
 			});
 		} else {
+      wx.showToast({
+        title: '请输入内容',
+        icon: 'none',
+      })
 			console.log('当前还不能发送');
 		}
 	},
@@ -280,6 +291,9 @@ Page({
 	// 发送 语音信息
 	sendspeakingMsg: function (speakingMsg) {
 		const that = this;
+		that.setData({
+			hassendtag: true
+		})
 		let userMsg = speakingMsg,
 			chatDataArray = that.data.chatDataArray,
 			waitting = '正在处理...';
@@ -334,7 +348,7 @@ Page({
 			let windowHeight = wx.getSystemInfoSync().windowHeight;
 			let windowWidth = wx.getSystemInfoSync().windowWidth;
 			const navigationbarheight = deviceUtil.getNavigationBarHeight();
-			const viewHeight = parseInt(750 * (windowHeight - _h - 15) / windowWidth - navigationbarheight);
+			const viewHeight = parseInt(750 * (windowHeight - _h) / windowWidth - 33 - navigationbarheight);
 			// console.log(viewHeight)
 			that.setData({
 				viewHeight
@@ -349,6 +363,7 @@ Page({
 		that.getBtnHeight(); // 处理 设备可显示高度
 		that.getsignature();
 		that.gettoken();
+		that.wordchange();
 	},
 
 	// 页面 准备完毕
@@ -370,6 +385,22 @@ Page({
 			})
 		}
 		)
+		that.data.setInter2 = setInterval(
+			function () {
+				var waitting_time = that.data.waitting_time + 1
+				if(that.data.hassendtag == true){
+					clearInterval(that.data.setInter2);
+				}
+				if(waitting_time >= 20 &&that.data.hassendtag==false ){
+					that.setData({
+						showReminder: true
+					})
+					clearInterval(that.data.setInter2);
+				}
+				that.setData({
+					waitting_time
+				})
+			}, 1000);//一秒一次调用
 	},
 
 	// 处理 键盘弹起
@@ -429,14 +460,14 @@ Page({
 		}
 	})
 	},
-	
+
 	// 前端 点击播放录音
 	taptoplay: function (event)
 	{
 		this.tts(event.currentTarget.dataset.detail)
 	},
 
-  // 语音合成
+  // 语音 合成
   tts:function (content) {
     var that = this;
     plugin.textToSpeech({
@@ -459,7 +490,7 @@ Page({
     })
   },
   
-  // 播放语音
+  // 播放 语音
   begin: function (e) {
     if (this.data.src == '') {
       console.log(暂无语音);
@@ -469,12 +500,41 @@ Page({
     this.innerAudioContext.play(); //播放音频
   },
  
-  // 结束播放
+  // 结束 语音播放
   end: function (e) {
     this.innerAudioContext.pause();//暂停音频
 		this.setData({
 			playingtag: false
 		})
-  },
+	},
+	
+	// 发送 推荐问题
+	sendreminderMsg: function (event) {
+		this.sendspeakingMsg(event.currentTarget.dataset.detail)
+	},
 
+	// 改变 推荐问题
+	wordchange: function () {
+		var that = this
+		var BackArray = ["海贝分是什么","海贝分高有什么优惠福利","在哪里可以查询海贝分","进校园","进企业","进农村","进机关","进社区","加分细则","扣分细则"]
+		const ReminderArray = RandomNumBoth(BackArray,3)
+		// console.log(ReminderArray)
+		that.setData({
+			ReminderArray
+		})
+	}
 })
+// 随机取样函数
+function RandomNumBoth(arr, maxNum) {
+	var numArr = [];
+	var arrLength = arr.length;
+	for (var i = 0; i < arrLength; i++) {
+		var Rand = arr.length;
+		var number = Math.floor(Math.random() * arr.length);
+		numArr.push(arr[number]);
+		arr.splice(number, 1);
+		if (arr.length <= arrLength - maxNum) {
+			return numArr;
+		}
+	}
+}
