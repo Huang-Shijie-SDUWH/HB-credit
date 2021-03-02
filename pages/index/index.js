@@ -19,17 +19,17 @@ Page({
 		capsuleBarHeight: deviceUtil.getNavigationBarHeight(),
 		speak_time: 0,
 		start_time: "", // 获取到当前录音开始时间
-		record_name: "按住 说话", 
+		record_name: "按住 说话",
 		speak_time: 0, // 录制最终时间
 		setInter: '', // 存储计时器
 		speakingtag: false,
 		num: 1,
 		formFile: '',
-		asrurl: 'https://mylifemeaning.cn/soket_server/get_token',//语音识别api接口地址
+		asrurl: 'https://mylifemeaning.cn/soket_server/get_token', //语音识别api接口地址
 		signatureurl: 'https://mylifemeaning.cn/soket_server/get_signature',
 		fotterBottom: 0,
 		token: '',
-		src:'',
+		src: '',
 		playingtag: false,
 		canspeaktag: 5,
 		waitting_time: 0,
@@ -42,7 +42,7 @@ Page({
 	getsignature: function (e) {
 		var that = this;
 		wx.request({
-			url:  that.data.signatureurl,
+			url: that.data.signatureurl,
 			method: 'GET',
 			success: function (res) {
 				// console.log(res)
@@ -61,7 +61,7 @@ Page({
 	gettoken: function (e) {
 		var that = this;
 		wx.request({
-			url:  that.data.asrurl,
+			url: that.data.asrurl,
 			method: 'GET',
 			success: function (res) {
 				const token = res.data.access_token;
@@ -91,14 +91,16 @@ Page({
 	// 跳转 到文档
 	jumptodoc() {
 		console.log("jump")
+		this.end();
 		wx.redirectTo({
 			url: '/pages/detail/detail',
 		})
 	},
 
 	// 跳转 到反馈中心
-  jumptofb() {
+	jumptofb() {
 		console.log("jump")
+		this.end();
 		wx.redirectTo({
 			url: '/pages/feedback/feedback',
 		})
@@ -114,6 +116,7 @@ Page({
 	// 手指 按下语音按钮
 	touchdown: function (e) {
 		var that = this;
+		that.end();
 		console.log('touchStart....')
 		that.start(); //如果授权，开始录音
 		that.data.setInter = setInterval(
@@ -141,7 +144,7 @@ Page({
 						icon: "none"
 					})
 				}
-			}, 1000);//一秒一次调用
+			}, 1000); //一秒一次调用
 	},
 
 	// 手指 抬起
@@ -178,7 +181,7 @@ Page({
 		}
 		//开始录音
 		this.setData({
-			speak_time:0
+			speak_time: 0
 		})
 		recorderManager.start(options);
 		recorderManager.onStart(() => {
@@ -204,15 +207,15 @@ Page({
 					// console.log(res.data)
 					// console.log(res.data.length)
 					console.log(res.data.byteLength)
-					if(res.data.byteLength<20000) return;
-					that.ASRRequest(FilePath,res.data.byteLength)
+					if (res.data.byteLength < 20000) return;
+					that.ASRRequest(FilePath, res.data.byteLength)
 				},
 				fail: console.error
 			})
 			// that.sendspeakingMsg(JSON.parse(res.data).result)
 		})
 	},
-	
+
 	// 监听 底部输入框
 	bindInputValue: function (e) {
 		const userMsg = e.detail.value;
@@ -231,7 +234,8 @@ Page({
 	// 发送 聊天信息
 	sendMsg: function (e) {
 		const that = this,
-		canSend = that.data.canSend;
+		canSend = that.data.canSend
+		console.log(this.data.chatDataArray)
 		if (canSend) {
 			that.setData({
 				hassendtag: true
@@ -267,6 +271,14 @@ Page({
 						// 修饰动画 - 正在回复中 变回原值
 						const i = oldChatDataArray.length - 1;
 						oldChatDataArray[i].serviceMsg = serviceMsg;
+						oldChatDataArray[i].list_options = res.data.list_options;
+						if(res.data.ans_node_name[0]=='b'&&res.data.ans_node_name[1]=='i'&&res.data.ans_node_name[2]=='d'){// 屏蔽原生指令
+							oldChatDataArray[i].serviceMsg="小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
+						}
+						if(res.data.list_options)//高级问题
+						{
+							oldChatDataArray[i].options = res.data.options;
+						}
 						that.setData({
 							chatDataArray: oldChatDataArray
 						});
@@ -280,10 +292,10 @@ Page({
 				}
 			});
 		} else {
-      wx.showToast({
-        title: '请输入内容',
-        icon: 'none',
-      })
+			wx.showToast({
+				title: '请输入内容',
+				icon: 'none',
+			})
 			console.log('当前还不能发送');
 		}
 	},
@@ -322,6 +334,14 @@ Page({
 					// 修饰动画 - 正在回复中 变回原值
 					const i = oldChatDataArray.length - 1;
 					oldChatDataArray[i].serviceMsg = serviceMsg;
+					oldChatDataArray[i].list_options = res.data.list_options;
+					if(res.data.list_options)//高级问题
+					{
+						oldChatDataArray[i].options = res.data.options;
+					}
+					if(res.data.ans_node_name[0]=='b'&&res.data.ans_node_name[1]=='i'&&res.data.ans_node_name[2]=='d'){// 屏蔽原生指令
+						oldChatDataArray[i].serviceMsg="小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
+					}
 					that.setData({
 						chatDataArray: oldChatDataArray
 					});
@@ -339,7 +359,7 @@ Page({
 	// 处理 设备可显示高度
 	getBtnHeight: function () {
 		const that = this,
-		query = wx.createSelectorQuery();
+			query = wx.createSelectorQuery();
 		query.select('#footerBtnGroup').boundingClientRect();
 		query.selectViewport().scrollOffset();
 		query.exec(function (res) {
@@ -348,7 +368,7 @@ Page({
 			let windowHeight = wx.getSystemInfoSync().windowHeight;
 			let windowWidth = wx.getSystemInfoSync().windowWidth;
 			const navigationbarheight = deviceUtil.getNavigationBarHeight();
-			const viewHeight = parseInt(750 * (windowHeight - _h) / windowWidth - 33 - navigationbarheight);
+			const viewHeight = parseInt(750 * (windowHeight - _h) / windowWidth - 37 - navigationbarheight);
 			// console.log(viewHeight)
 			that.setData({
 				viewHeight
@@ -370,28 +390,27 @@ Page({
 	onReady: function () {
 		var that = this;
 		this.animation = wx.createAnimation(); // 创建动画。
-		this.innerAudioContext = wx.createInnerAudioContext();      
+		this.innerAudioContext = wx.createInnerAudioContext();
 		this.tts(this.data.serviceMsg)
-    this.innerAudioContext.onError(function (res) {
-      console.log(res);
-      wx.showToast({
-        title: '语音播放失败',
-        icon: 'none',
-      })
+		this.innerAudioContext.onError(function (res) {
+			console.log(res);
+			wx.showToast({
+				title: '语音播放失败',
+				icon: 'none',
+			})
 		})
-		this.innerAudioContext.onEnded(function (res){
+		this.innerAudioContext.onEnded(function (res) {
 			that.setData({
 				playingtag: false
 			})
-		}
-		)
+		})
 		that.data.setInter2 = setInterval(
 			function () {
 				var waitting_time = that.data.waitting_time + 1
-				if(that.data.hassendtag == true){
+				if (that.data.hassendtag == true) {
 					clearInterval(that.data.setInter2);
 				}
-				if(waitting_time >= 20 &&that.data.hassendtag==false ){
+				if (waitting_time >= 5 && that.data.hassendtag == false) {
 					that.setData({
 						showReminder: true
 					})
@@ -400,18 +419,17 @@ Page({
 				that.setData({
 					waitting_time
 				})
-			}, 1000);//一秒一次调用
+			}, 1000); //一秒一次调用
 	},
 
 	// 处理 键盘弹起
-	keyboardprocess: function(e){
-		var that=this;
-		if(e.type=='linfocus'){
+	keyboardprocess: function (e) {
+		var that = this;
+		if (e.type == 'linfocus') {
 			that.setData({
-				fotterBottom:e.detail.height
+				fotterBottom: e.detail.height
 			})
-		}
-		else{
+		} else {
 			that.setData({
 				fotterBottom: 0
 			})
@@ -422,92 +440,93 @@ Page({
 	},
 
 	// 自训练模型 语音识别
-	ASRRequest: function (tempFilePath,len) { 
-	var that = this;
-	var api = "nli";
-	const LM_ID = 12681;
-	var voice0 = fs.readFileSync(tempFilePath, "base64");
-	var rqJson = {
-		'dev_pid': 80001,
-		"lm_id": LM_ID,
-		'format': 'pcm',
-		'rate': 16000,
-		'token': that.data.token,
-		'cuid': 'humor',
-		'channel': 1,
-		'len': len,
-		'speech': voice0
-	};
-	var rq = JSON.stringify(rqJson);
-	var ASRUrl = "https://vop.baidu.com/pro_api";
-	console.log("[Console log]:ASRRequest(),URL:" + ASRUrl);
-	wx.request({
-		url: ASRUrl,
-		data: rq,
-		header: { 'content-type': 'application/json' },
-		method: 'POST',
-		success: function (res) {
-			console.log("[Console log]:ASTRequest() success...");
-			console.log(res)
-			that.sendspeakingMsg(res.data.result[0])
-		},
-		fail: function (res) {
-			console.log("[Console log]:ASRRequest() failed...");
-			console.error("[Console log]:Error Message:" + res.errMsg);
-		},
-		complete: function () {
-			console.log("[Console log]:ASRRequest() complete...");
-		}
-	})
+	ASRRequest: function (tempFilePath, len) {
+		var that = this;
+		var api = "nli";
+		const LM_ID = 12681;
+		var voice0 = fs.readFileSync(tempFilePath, "base64");
+		var rqJson = {
+			'dev_pid': 80001,
+			"lm_id": LM_ID,
+			'format': 'pcm',
+			'rate': 16000,
+			'token': that.data.token,
+			'cuid': 'humor',
+			'channel': 1,
+			'len': len,
+			'speech': voice0
+		};
+		var rq = JSON.stringify(rqJson);
+		var ASRUrl = "https://vop.baidu.com/pro_api";
+		console.log("[Console log]:ASRRequest(),URL:" + ASRUrl);
+		wx.request({
+			url: ASRUrl,
+			data: rq,
+			header: {
+				'content-type': 'application/json'
+			},
+			method: 'POST',
+			success: function (res) {
+				console.log("[Console log]:ASTRequest() success...");
+				console.log(res)
+				that.sendspeakingMsg(res.data.result[0])
+			},
+			fail: function (res) {
+				console.log("[Console log]:ASRRequest() failed...");
+				console.error("[Console log]:Error Message:" + res.errMsg);
+			},
+			complete: function () {
+				console.log("[Console log]:ASRRequest() complete...");
+			}
+		})
 	},
 
 	// 前端 点击播放录音
-	taptoplay: function (event)
-	{
+	taptoplay: function (event) {
 		this.tts(event.currentTarget.dataset.detail)
 	},
 
-  // 语音 合成
-  tts:function (content) {
-    var that = this;
-    plugin.textToSpeech({
-      lang: "zh_CN",
-      tts: true,
-      content: content,
-      success: function (res) {
-        // console.log(res);
-        console.log("succ tts", res.filename);
-        that.setData({
+	// 语音 合成
+	tts: function (content) {
+		var that = this;
+		plugin.textToSpeech({
+			lang: "zh_CN",
+			tts: true,
+			content: content,
+			success: function (res) {
+				// console.log(res);
+				console.log("succ tts", res.filename);
+				that.setData({
 					src: res.filename,
 					playingtag: true
-        })
-        that.begin();
- 
-      },
-      fail: function (res) {
-        console.log("fail tts", res)
-      }
-    })
-  },
-  
-  // 播放 语音
-  begin: function (e) {
-    if (this.data.src == '') {
-      console.log(暂无语音);
-      return;
-    }
-    this.innerAudioContext.src = this.data.src //设置音频地址
-    this.innerAudioContext.play(); //播放音频
-  },
- 
-  // 结束 语音播放
-  end: function (e) {
-    this.innerAudioContext.pause();//暂停音频
+				})
+				that.begin();
+
+			},
+			fail: function (res) {
+				console.log("fail tts", res)
+			}
+		})
+	},
+
+	// 播放 语音
+	begin: function (e) {
+		if (this.data.src == '') {
+			console.log(暂无语音);
+			return;
+		}
+		this.innerAudioContext.src = this.data.src //设置音频地址
+		this.innerAudioContext.play(); //播放音频
+	},
+
+	// 结束 语音播放
+	end: function (e) {
+		this.innerAudioContext.pause(); //暂停音频
 		this.setData({
 			playingtag: false
 		})
 	},
-	
+
 	// 发送 推荐问题
 	sendreminderMsg: function (event) {
 		this.sendspeakingMsg(event.currentTarget.dataset.detail)
@@ -516,13 +535,14 @@ Page({
 	// 改变 推荐问题
 	wordchange: function () {
 		var that = this
-		var BackArray = ["海贝分是什么","海贝分高有什么优惠福利","在哪里可以查询海贝分","进校园","进企业","进农村","进机关","进社区","加分细则","扣分细则"]
-		const ReminderArray = RandomNumBoth(BackArray,3)
+		var BackArray = ["海贝分是什么", "海贝分高有什么优惠福利", "在哪里可以查询海贝分", "进校园", "进企业", "进农村", "进机关", "进社区", "加分细则", "扣分细则"]
+		const ReminderArray = RandomNumBoth(BackArray, 3)
 		// console.log(ReminderArray)
 		that.setData({
 			ReminderArray
 		})
 	}
+
 })
 // 随机取样函数
 function RandomNumBoth(arr, maxNum) {

@@ -25,25 +25,31 @@
 					<!-- 问候语 -->
 					<view class='chatLabel auto'>
 						<image class='avatar' src='{{ avatarAuto }}'></image>
-						<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{serviceMsg}}" class='articleBox'><text>{{ serviceMsg }}</text>
-							<l-icon name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);"/>
+						<view bindtap='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{serviceMsg}}" class='articleBox'>
+							<text>{{ serviceMsg }}</text>
+							<l-icon name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
 						</view>
 					</view>
 
 
 					<!-- 延时提示信息 -->
-					<view class='chatLabel auto' wx:if = "{{showReminder}}">
+					<view class='chatLabel auto' wx:if="{{showReminder}}">
 						<image class='avatar' src='{{ avatarAuto }}'></image>
 						<view class='articleBox'>
-							<l-button style="position:absolute;right:140rpx;bottom:10rpx;" icon="wordchange" bindtap="wordchange" l-icon-class="iconfont" plain="true" size="mini">换一换</l-button>
+							<l-button bindtap="wordchange" style="position:absolute;right:140rpx;bottom:10rpx;" special="{{true}}">
+								<view class="huanyihuan">
+									<l-icon size="30" l-class="iconfont" name="wordchange" />
+									<text class="describe">换一换</text>
+								</view>
+							</l-button>
 							<text> 一时想不到要问什么？ 那就先试试以下问题吧：
 
 							</text>
-							<view wx:for = "{{ReminderArray}}" wx:key="index">
-							<text class="highlight" bindtap="sendreminderMsg" data-detail="{{item}}">
-								· {{item}}
-							</text>
-							<text>\n\n</text>
+							<view wx:for="{{ReminderArray}}" wx:key="index">
+								<text class="highlight" bindtap="sendreminderMsg" data-detail="{{item}}">
+									· {{item}}
+								</text>
+								<text>\n\n</text>
 							</view>
 						</view>
 					</view>
@@ -65,8 +71,20 @@
 						<!-- 回答 -->
 						<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
 							<image class='avatar' src='{{ avatarAuto }}'></image>
-							<view bindtap ='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}" class='articleBox'>{{ item.serviceMsg }}
-							<l-icon name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);"/></view>
+							<view bindtap='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}"
+								class='articleBox'>{{ item.serviceMsg }}
+								<l-icon name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
+								<view wx:if="{{item.list_options}}">
+									<text> 您可以说：
+
+									</text>
+									<view wx:for="{{item.options}}" wx:key="index">
+										<text class="highlight" bindtap="sendreminderMsg" data-detail="{{item.title}}">
+											{{item.title}}
+										</text>
+									</view>
+								</view>
+							</view>
 						</view>
 
 
@@ -96,8 +114,9 @@
 			<!-- 按住说话 -->
 			<view wx:else>
 				<view class='chatFooterGroup' id='footerBtnGroup'>
-					<l-input l-class="display:block" :adjust-position="false" l-input-class="hiddeninput" placeholder-style="text-align:center"
-						value='{{ useMsg }}' name="useMsg" bind:lininput="bindInputValue" label-width="100">
+					<l-input l-class="display:block" :adjust-position="false" l-input-class="hiddeninput"
+						placeholder-style="text-align:center" value='{{ useMsg }}' name="useMsg" bind:lininput="bindInputValue"
+						label-width="100">
 						<view slot="left" bindtap="changespeaktag">
 							<l-icon name='keyboard' l-class='iconfont' size="50" />
 						</view>
