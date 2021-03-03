@@ -83,6 +83,9 @@
 											{{item.title}}
 										</text>
 									</view>
+									<text class="highlight" bindtap="sendreminderMsg" data-detail="退出">
+										退出该问答
+									</text>
 								</view>
 							</view>
 						</view>

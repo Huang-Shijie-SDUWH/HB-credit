@@ -38,7 +38,10 @@ Page({
 		ReminderArray: [],
 		firstplayingtag: true,
 		indextag: 0,
-		isios: false
+		isios: false,
+		sendagaintag: false,
+		sendagainmsg: '',
+		cancelmsg: ''
 	},
 
 	// 获取 微信对话平台凭证
@@ -298,6 +301,18 @@ Page({
 					console.log(res.data)
 					// 延迟0.1s 回复
 					setTimeout(() => {
+						if(userMsg=="退出"){
+							that.sendagain(that.data.cancelmsg)
+							// console.log("yes")
+							that.setData({
+								sendagaintag: false,
+								sendagainmsg: '',
+								cancelmsg: ''
+							})
+						}
+						if(that.data.sendagaintag==true&&userMsg!="退出"){
+							that.sendagain(that.data.sendagainmsg)
+						}
 						// 修饰动画 - 正在回复中 变回原值
 						const i = oldChatDataArray.length - 1;
 						oldChatDataArray[i].serviceMsg = serviceMsg;
@@ -309,6 +324,12 @@ Page({
 						if (res.data.list_options) //高级问题
 						{
 							oldChatDataArray[i].options = res.data.options;
+							that.setData({
+								sendagaintag: true,
+								sendagainmsg: userMsg,
+								cancelmsg: res.data.options[0].title
+							})
+							console.log(that.data.cancelmsg)
 						}
 						that.setData({
 							indextag: i + 1,
@@ -364,6 +385,17 @@ Page({
 
 				// 延迟0.1s 回复
 				setTimeout(() => {
+					if(userMsg=="退出"){
+						that.sendagain(that.data.cancelmsg)
+						that.setData({
+							sendagaintag: false,
+							sendagainmsg: '',
+							cancelmsg: ''
+						})
+					}
+					if(that.data.sendagaintag==true&&userMsg!="退出"){
+						that.sendagain(that.data.sendagainmsg)
+					}
 					// 修饰动画 - 正在回复中 变回原值
 					const i = oldChatDataArray.length - 1;
 					oldChatDataArray[i].serviceMsg = serviceMsg;
@@ -372,6 +404,12 @@ Page({
 					if (res.data.list_options) //高级问题
 					{
 						oldChatDataArray[i].options = res.data.options;
+						that.setData({
+							sendagaintag: true,
+							sendagainmsg: userMsg,
+							cancelmsg: res.data.options[0].title
+						})
+						console.log(that.data.cancelmsg)
 					}
 					if (res.data.ans_node_name[0] == 'b' && res.data.ans_node_name[1] == 'i' && res.data.ans_node_name[2] == 'd') { // 屏蔽原生指令
 						oldChatDataArray[i].serviceMsg = "小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
@@ -628,6 +666,8 @@ Page({
 			ReminderArray
 		})
 	},
+
+	// 苹果系统点击
 	iostouch: function () {
 		var that = this
 		if(that.data.speakingtag==true){
@@ -636,6 +676,26 @@ Page({
 		else{
 			that.touchdown()
 		}
+	},
+	// 不结束追问
+	sendagain: function (userMsg) {
+		var that = this
+		let params = {
+			"signature": that.data.signature,
+			"query": userMsg
+		};
+		wx.request({
+			url: 'https://openai.weixin.qq.com/openapi/aibot/xHhglGcCRPTjBpmIABAEgXqXjiBlKU',
+			data: params,
+			method: 'POST',
+			success: function (res) {
+				
+			},
+			fail: function (e) {
+				// fail  
+				console.log(e)
+			}
+		});
 	}
 })
 // 随机取样函数
