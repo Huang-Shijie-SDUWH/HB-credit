@@ -3,8 +3,8 @@
     "pages/index/index",
     "pages/detail/detail",
     "pages/feedback/feedback",
-    "pages/feedback/form/form",
-    "pages/feedback/about/about"
+    "pages/feedback/about/about",
+    "pages/feedback/form/form"
   ],
   "window": {
     "backgroundTextStyle": "light",

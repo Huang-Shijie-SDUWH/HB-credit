@@ -85,6 +85,7 @@ Page({
     })
   }
 })
+//KMP 算法
 function kmpGetStrPartMatchValue(str) {
   var prefix = [];
   var suffix = [];

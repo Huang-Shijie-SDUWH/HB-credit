@@ -35,7 +35,9 @@ Page({
 		waitting_time: 0,
 		showReminder: false,
 		hassendtag: false,
-		ReminderArray: []
+		ReminderArray: [],
+		firstplayingtag: true,
+		indextag: 0
 	},
 
 	// 获取 微信对话平台凭证
@@ -207,7 +209,14 @@ Page({
 					// console.log(res.data)
 					// console.log(res.data.length)
 					console.log(res.data.byteLength)
-					if (res.data.byteLength < 20000) return;
+					if (res.data.byteLength < 20000){
+						wx.showToast({
+							title: '请重新录制',
+							duration: 2000,
+							icon: "none"
+						})
+						return;
+					}
 					that.ASRRequest(FilePath, res.data.byteLength)
 				},
 				fail: console.error
@@ -233,8 +242,9 @@ Page({
 
 	// 发送 聊天信息
 	sendMsg: function (e) {
-		const that = this,
-		canSend = that.data.canSend
+		var that = this,
+			canSend = that.data.canSend
+		that.end()
 		console.log(this.data.chatDataArray)
 		if (canSend) {
 			that.setData({
@@ -272,14 +282,16 @@ Page({
 						const i = oldChatDataArray.length - 1;
 						oldChatDataArray[i].serviceMsg = serviceMsg;
 						oldChatDataArray[i].list_options = res.data.list_options;
-						if(res.data.ans_node_name[0]=='b'&&res.data.ans_node_name[1]=='i'&&res.data.ans_node_name[2]=='d'){// 屏蔽原生指令
-							oldChatDataArray[i].serviceMsg="小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
+						oldChatDataArray[i].playing = true;
+						if (res.data.ans_node_name[0] == 'b' && res.data.ans_node_name[1] == 'i' && res.data.ans_node_name[2] == 'd') { // 屏蔽原生指令
+							oldChatDataArray[i].serviceMsg = "小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
 						}
-						if(res.data.list_options)//高级问题
+						if (res.data.list_options) //高级问题
 						{
 							oldChatDataArray[i].options = res.data.options;
 						}
 						that.setData({
+							indextag: i + 1,
 							chatDataArray: oldChatDataArray
 						});
 						that.tapMove(); // 执行第二次滑动 定位到底部
@@ -306,6 +318,7 @@ Page({
 		that.setData({
 			hassendtag: true
 		})
+		that.end()
 		let userMsg = speakingMsg,
 			chatDataArray = that.data.chatDataArray,
 			waitting = '正在处理...';
@@ -335,14 +348,16 @@ Page({
 					const i = oldChatDataArray.length - 1;
 					oldChatDataArray[i].serviceMsg = serviceMsg;
 					oldChatDataArray[i].list_options = res.data.list_options;
-					if(res.data.list_options)//高级问题
+					oldChatDataArray[i].playing = true;
+					if (res.data.list_options) //高级问题
 					{
 						oldChatDataArray[i].options = res.data.options;
 					}
-					if(res.data.ans_node_name[0]=='b'&&res.data.ans_node_name[1]=='i'&&res.data.ans_node_name[2]=='d'){// 屏蔽原生指令
-						oldChatDataArray[i].serviceMsg="小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
+					if (res.data.ans_node_name[0] == 'b' && res.data.ans_node_name[1] == 'i' && res.data.ans_node_name[2] == 'd') { // 屏蔽原生指令
+						oldChatDataArray[i].serviceMsg = "小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
 					}
 					that.setData({
+						indextag: i + 1,
 						chatDataArray: oldChatDataArray
 					});
 					that.tapMove(); // 执行第二次滑动 定位到底部
@@ -400,6 +415,21 @@ Page({
 			})
 		})
 		this.innerAudioContext.onEnded(function (res) {
+			const chatDataArray = that.data.chatDataArray
+			const indextag = that.data.indextag
+			if (indextag == 0) {
+				that.setData({
+					playingtag: false,
+					firstplayingtag: false
+				})
+			} else {
+				chatDataArray[indextag - 1].playing = false
+				that.setData({
+					playingtag: false,
+					indextag: 0,
+					chatDataArray
+				})
+			}
 			that.setData({
 				playingtag: false
 			})
@@ -484,6 +514,19 @@ Page({
 	// 前端 点击播放录音
 	taptoplay: function (event) {
 		this.tts(event.currentTarget.dataset.detail)
+		const chatDataArray = this.data.chatDataArray
+		if (event.currentTarget.dataset.hasOwnProperty("tag")) {
+			const indextag = event.currentTarget.dataset.tag + 1
+			chatDataArray[indextag - 1].playing = true
+			this.setData({
+				chatDataArray,
+				indextag
+			})
+		} else {
+			this.setData({
+				firstplayingtag: true
+			})
+		}
 	},
 
 	// 语音 合成
@@ -522,9 +565,21 @@ Page({
 	// 结束 语音播放
 	end: function (e) {
 		this.innerAudioContext.pause(); //暂停音频
-		this.setData({
-			playingtag: false
-		})
+		const chatDataArray = this.data.chatDataArray
+		const indextag = this.data.indextag
+		if (indextag == 0) {
+			this.setData({
+				playingtag: false,
+				firstplayingtag: false
+			})
+		} else {
+			chatDataArray[indextag - 1].playing = false
+			this.setData({
+				playingtag: false,
+				indextag: 0,
+				chatDataArray
+			})
+		}
 	},
 
 	// 发送 推荐问题

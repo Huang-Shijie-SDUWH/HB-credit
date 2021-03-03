@@ -1,6 +1,6 @@
 <l-capsule-bar capsule-left-icon-width="38" capsule-left-icon-height="38"
   capsule-right-icon-width="38" capsule-right-icon-height="38" capsule-left-icon-path="/imgs/siri.png"
-  capsule-right-icon-path="/imgs/doc_b.png" title="反馈中心" bg-color="#3963BC" status-bar-color="#3963BC"
+  capsule-right-icon-path="/imgs/xitonggongneng.png" title="反馈中心" bg-color="#3963BC" status-bar-color="#3963BC"
   title-bar-color="white" hidden-title="true" bind:linlefttap="jumptosiri" bind:linrighttap="jumptodoc"
   disable-back="true" disable-home="true">
   <view class="tab-content">
