@@ -19,8 +19,7 @@
 
 小程序二维码
 
-<img src="https://i.postimg.cc/LsXBFSSz/code.jpg
-" alt="1.jpg" style="zoom: 100%;" />
+<img src="https://i.postimg.cc/LsXBFSSz/code.jpg" alt="code.jpg" style="zoom: 50%;" />
 
 
 
@@ -40,7 +39,7 @@
 
 ### 作品效果图
 
-<img src="https://i.postimg.cc/GhwQ86PC/1.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/bNxRQLL2/2.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/g2GH4RBt/3.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/FHGg6RMr/4.jpg" alt="1.jpg" style="zoom: 50%;" />
+<img src="https://i.postimg.cc/GhwQ86PC/1.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/bNxRQLL2/2.jpg" alt="2.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/g2GH4RBt/3.jpg" alt="3.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/FHGg6RMr/4.jpg" alt="4.jpg" style="zoom: 50%;" />
 
 ### 产品介绍视频
 
