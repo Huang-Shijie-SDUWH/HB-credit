@@ -121,8 +121,15 @@
 							<l-icon name='keyboard' l-class='iconfont' size="50" />
 						</view>
 						<view slot="right">
+							<view wx:if="{{isios}}">
+							<l-button shape="circle" width="620" bindtap="iostouch">{{record_name}}
+							</l-button>
+							</view>
+							<view wx:else>
 							<l-button shape="circle" width="620" bindtouchstart='touchdown' bindtouchend="touchup">{{record_name}}
 							</l-button>
+							</view>
+
 						</view>
 					</l-input>
 				</view>

@@ -37,7 +37,8 @@ Page({
 		hassendtag: false,
 		ReminderArray: [],
 		firstplayingtag: true,
-		indextag: 0
+		indextag: 0,
+		isios: false
 	},
 
 	// 获取 微信对话平台凭证
@@ -124,11 +125,21 @@ Page({
 		that.data.setInter = setInterval(
 			function () {
 				var speak_time = that.data.speak_time + 1;
+				if(that.data.isios==true){
+				that.setData({
+					speak_time: speak_time,
+					record_name: "点击 发送",
+					speakingtag: true
+				});
+			}
+			else{
 				that.setData({
 					speak_time: speak_time,
 					record_name: "松开 发送",
 					speakingtag: true
 				});
+
+			}
 				console.log(speak_time)
 
 				if (that.data.speak_time >= 0 && that.data.speak_time <= 59) {
@@ -165,11 +176,20 @@ Page({
 				icon: "none"
 			})
 		}
+		if(that.data.isios==true){
+			that.setData({
+				speakingtag: false,
+				record_name: "点击 说话",
+				speak_time: "0"
+			})
+		}
+		else{
 		that.setData({
 			speakingtag: false,
 			record_name: "按住 说话",
 			speak_time: "0"
-		})
+			})
+		}
 
 	},
 
@@ -399,6 +419,17 @@ Page({
 		that.getsignature();
 		that.gettoken();
 		that.wordchange();
+		wx.getSystemInfo({
+			success: (result) => {
+				if(result.platform!="android")
+				{
+					that.setData({
+						isios: true,
+						record_name: "点击 发送"
+					})
+				}
+			},
+		})
 	},
 
 	// 页面 准备完毕
@@ -596,8 +627,16 @@ Page({
 		that.setData({
 			ReminderArray
 		})
+	},
+	iostouch: function () {
+		var that = this
+		if(that.data.speakingtag==true){
+			that.touchup()
+		}
+		else{
+			that.touchdown()
+		}
 	}
-
 })
 // 随机取样函数
 function RandomNumBoth(arr, maxNum) {
