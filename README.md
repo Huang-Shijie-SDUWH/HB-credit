@@ -19,7 +19,8 @@
 
 小程序二维码
 
-![gh_d8781d57f431_258 (1)](C:\Users\Administrator\Downloads\gh_d8781d57f431_258 (1).jpg)
+<img src="https://i.postimg.cc/LsXBFSSz/code.jpg
+" alt="1.jpg" style="zoom: 100%;" />
 
 
 
@@ -39,7 +40,7 @@
 
 ### 作品效果图
 
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210303210841670.png" alt="image-20210303210841670" style="zoom: 50%;" /><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210303210925988.png" alt="image-20210303210925988" style="zoom:50%;" /><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210303211031776.png" alt="image-20210303211031776" style="zoom:50%;" /><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210303211003309.png" alt="image-20210303211003309" style="zoom:50%;" />
+<img src="https://i.postimg.cc/GhwQ86PC/1.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/bNxRQLL2/2.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/g2GH4RBt/3.jpg" alt="1.jpg" style="zoom: 50%;" /><img src="https://i.postimg.cc/FHGg6RMr/4.jpg" alt="1.jpg" style="zoom: 50%;" />
 
 ### 产品介绍视频
 
