@@ -13,7 +13,7 @@ Page({
 		userMsg: '', // 用户输入框内的信息
 		toView: 'toFooter', // 定位到底部，用于处理消息容器滑动到最底部
 		serviceMsg: '你好呀，朋友！这里是您的海贝分小助手，智能客服小贝将竭诚为您服务。请问关于海贝分，您想了解些什么？', // 客服对话信息
-		signature: '', //微信对话平台凭证
+		Unit_token: '', //Unit对话平台凭证
 		speak: true,
 		speak_time: 10,
 		capsuleBarHeight: deviceUtil.getNavigationBarHeight(),
@@ -25,8 +25,8 @@ Page({
 		speakingtag: false,
 		num: 1,
 		formFile: '',
-		asrurl: 'https://mylifemeaning.cn/soket_server/get_token', //语音识别api接口地址
-		signatureurl: 'https://mylifemeaning.cn/soket_server/get_signature',
+		asrurl: 'https://mylifemeaning.cn:8866/get_token', //语音识别api接口地址
+		Unit_tokenurl: 'https://mylifemeaning.cn:8866/get_Unit_token',
 		fotterBottom: 0,
 		token: '',
 		src: '',
@@ -38,27 +38,24 @@ Page({
 		ReminderArray: [],
 		firstplayingtag: true,
 		indextag: 0,
-		isios: false,
-		sendagaintag: false,
-		sendagainmsg: '',
-		cancelmsg: ''
+		isios: false
 	},
 
 	// 获取 微信对话平台凭证
-	getsignature: function (e) {
+	getUnit_token: function (e) {
 		var that = this;
 		wx.request({
-			url: that.data.signatureurl,
-			method: 'GET',
+			url: that.data.Unit_tokenurl,
+			method: 'POST',
 			success: function (res) {
 				// console.log(res)
-				const signature = res.data.signature;
+				const Unit_token = res.data;
 				that.setData({
-					signature
+					Unit_token
 				})
 			},
 			fail: function () {
-				console.log("getsignature failed!")
+				console.log("getUnit_token failed!")
 			}
 		})
 	},
@@ -68,7 +65,7 @@ Page({
 		var that = this;
 		wx.request({
 			url: that.data.asrurl,
-			method: 'GET',
+			method: 'POST',
 			success: function (res) {
 				const token = res.data.access_token;
 				that.setData({
@@ -289,48 +286,24 @@ Page({
 			that.tapMove(); // 执行一次滑动 定位到底部
 			// 接入微信对话平台
 			let params = {
-				"signature": that.data.signature,
-				"query": userMsg
+				"Unit_token": that.data.Unit_token,
+				"msg": userMsg
 			};
 			wx.request({
-				url: 'https://openai.weixin.qq.com/openapi/aibot/xHhglGcCRPTjBpmIABAEgXqXjiBlKU',
+				url: 'https://mylifemeaning.cn:8866/send_msg',
 				data: params,
 				method: 'POST',
 				success: function (res) {
-					const serviceMsg = res.data.answer; // 得到微信接口返回的文本信息
+					const serviceMsg = res.data.say; // 得到微信接口返回的文本信息
 					console.log(res.data)
 					// 延迟0.1s 回复
 					setTimeout(() => {
-						if(userMsg=="退出"){
-							that.sendagain(that.data.cancelmsg)
-							// console.log("yes")
-							that.setData({
-								sendagaintag: false,
-								sendagainmsg: '',
-								cancelmsg: ''
-							})
-						}
-						if(that.data.sendagaintag==true&&userMsg!="退出"){
-							that.sendagain(that.data.sendagainmsg)
-						}
 						// 修饰动画 - 正在回复中 变回原值
 						const i = oldChatDataArray.length - 1;
 						oldChatDataArray[i].serviceMsg = serviceMsg;
-						oldChatDataArray[i].list_options = res.data.list_options;
+						oldChatDataArray[i].options = res.data.options;
+						oldChatDataArray[i].list_options = res.data.option_tag;
 						oldChatDataArray[i].playing = true;
-						if (res.data.ans_node_name[0] == 'b' && res.data.ans_node_name[1] == 'i' && res.data.ans_node_name[2] == 'd') { // 屏蔽原生指令
-							oldChatDataArray[i].serviceMsg = "小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
-						}
-						if (res.data.list_options) //高级问题
-						{
-							oldChatDataArray[i].options = res.data.options;
-							that.setData({
-								sendagaintag: true,
-								sendagainmsg: userMsg,
-								cancelmsg: res.data.options[0].title
-							})
-							console.log(that.data.cancelmsg)
-						}
 						that.setData({
 							indextag: i + 1,
 							chatDataArray: oldChatDataArray
@@ -373,47 +346,24 @@ Page({
 		});
 		// 接入微信对话平台
 		let params = {
-			"signature": that.data.signature,
-			"query": userMsg
+			"Unit_token": that.data.Unit_token,
+			"msg": userMsg
 		};
 		wx.request({
-			url: 'https://openai.weixin.qq.com/openapi/aibot/xHhglGcCRPTjBpmIABAEgXqXjiBlKU',
+			url: 'https://mylifemeaning.cn:8866/send_msg',
 			data: params,
 			method: 'POST',
 			success: function (res) {
-				const serviceMsg = res.data.answer; // 得到微信接口返回的文本信息
-
+				const serviceMsg = res.data.say; // 得到微信接口返回的文本信息
+				console.log(serviceMsg)
 				// 延迟0.1s 回复
 				setTimeout(() => {
-					if(userMsg=="退出"){
-						that.sendagain(that.data.cancelmsg)
-						that.setData({
-							sendagaintag: false,
-							sendagainmsg: '',
-							cancelmsg: ''
-						})
-					}
-					if(that.data.sendagaintag==true&&userMsg!="退出"){
-						that.sendagain(that.data.sendagainmsg)
-					}
 					// 修饰动画 - 正在回复中 变回原值
 					const i = oldChatDataArray.length - 1;
 					oldChatDataArray[i].serviceMsg = serviceMsg;
-					oldChatDataArray[i].list_options = res.data.list_options;
+					oldChatDataArray[i].list_options = res.data.option_tag;
 					oldChatDataArray[i].playing = true;
-					if (res.data.list_options) //高级问题
-					{
-						oldChatDataArray[i].options = res.data.options;
-						that.setData({
-							sendagaintag: true,
-							sendagainmsg: userMsg,
-							cancelmsg: res.data.options[0].title
-						})
-						console.log(that.data.cancelmsg)
-					}
-					if (res.data.ans_node_name[0] == 'b' && res.data.ans_node_name[1] == 'i' && res.data.ans_node_name[2] == 'd') { // 屏蔽原生指令
-						oldChatDataArray[i].serviceMsg = "小海贝没有找到您想要的答案哦。您可以通过点击左上角的文档图标查阅更多信息，也可以点击反馈图标帮助小海贝提升自己哦。"
-					}
+					oldChatDataArray[i].options = res.data.options;
 					that.setData({
 						indextag: i + 1,
 						chatDataArray: oldChatDataArray
@@ -454,7 +404,7 @@ Page({
 	onLoad: function () {
 		const that = this;
 		that.getBtnHeight(); // 处理 设备可显示高度
-		that.getsignature();
+		that.getUnit_token();
 		that.gettoken();
 		that.wordchange();
 		wx.getSystemInfo({
@@ -659,7 +609,7 @@ Page({
 	// 改变 推荐问题
 	wordchange: function () {
 		var that = this
-		var BackArray = ["海贝分是什么", "海贝分高有什么优惠福利", "在哪里可以查询海贝分", "进校园", "进企业", "进农村", "进机关", "进社区", "加分细则", "扣分细则"]
+		var BackArray = ["海贝分是什么", "怎么提高海贝分", "在哪里可以查询海贝分", "进校园", "进企业", "进农村", "进机关", "进社区"]
 		const ReminderArray = RandomNumBoth(BackArray, 3)
 		// console.log(ReminderArray)
 		that.setData({
@@ -677,26 +627,6 @@ Page({
 			that.touchdown()
 		}
 	},
-	// 不结束追问
-	sendagain: function (userMsg) {
-		var that = this
-		let params = {
-			"signature": that.data.signature,
-			"query": userMsg
-		};
-		wx.request({
-			url: 'https://openai.weixin.qq.com/openapi/aibot/xHhglGcCRPTjBpmIABAEgXqXjiBlKU',
-			data: params,
-			method: 'POST',
-			success: function (res) {
-				
-			},
-			fail: function (e) {
-				// fail  
-				console.log(e)
-			}
-		});
-	}
 })
 // 随机取样函数
 function RandomNumBoth(arr, maxNum) {

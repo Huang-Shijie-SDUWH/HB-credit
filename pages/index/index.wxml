@@ -72,20 +72,17 @@
 						<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
 							<image class='avatar' src='{{ avatarAuto }}'></image>
 							<view bindtap='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}" data-tag="{{index}}"
-								class='articleBox'>{{ item.serviceMsg }}
+								class='articleBox'><text>{{ item.serviceMsg }}</text>
 								<l-icon name="soud" color="{{item.playing==true? '':'gray'}}" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
 								<view wx:if="{{item.list_options}}">
 									<text> 您可以说：
 
 									</text>
 									<view wx:for="{{item.options}}" wx:key="index">
-										<text class="highlight" bindtap="sendreminderMsg" data-detail="{{item.title}}">
-											{{item.title}}
+										<text class="highlight" bindtap="sendreminderMsg" data-detail="{{item}}">
+											{{item}}
 										</text>
 									</view>
-									<text class="highlight" bindtap="sendreminderMsg" data-detail="退出">
-										退出该问答
-									</text>
 								</view>
 							</view>
 						</view>

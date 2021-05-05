@@ -39,7 +39,7 @@ page {
   min-height: 30rpx;
   text-align: justify;
   max-width: 420rpx;
-  word-break: break-all;
+  line-break: auto;
 }
 
 .chatLabel .articleBox .highlight{
