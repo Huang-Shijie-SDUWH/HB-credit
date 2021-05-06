@@ -27,7 +27,8 @@
 						<image class='avatar' src='{{ avatarAuto }}'></image>
 						<view bindtap='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{serviceMsg}}" class='articleBox'>
 							<text>{{ serviceMsg }}</text>
-							<l-icon color="{{firstplayingtag==true? '':'gray'}}" name="soud" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
+							<l-icon color="{{firstplayingtag==true? '':'gray'}}" name="soud"
+								style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
 						</view>
 					</view>
 
@@ -71,9 +72,10 @@
 						<!-- 回答 -->
 						<view class='chatLabel auto' wx:if='{{ item.serviceMsg }}'>
 							<image class='avatar' src='{{ avatarAuto }}'></image>
-							<view bindtap='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}" data-tag="{{index}}"
-								class='articleBox'><text>{{ item.serviceMsg }}</text>
-								<l-icon name="soud" color="{{item.playing==true? '':'gray'}}" style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
+							<view bindtap='{{!playingtag? "taptoplay" : "end" }}' data-detail="{{item.serviceMsg}}"
+								data-tag="{{index}}" class='articleBox'><text>{{ item.serviceMsg }}</text>
+								<l-icon name="soud" color="{{item.playing==true? '':'gray'}}"
+									style="position:absolute;right:65rpx;top:50%;transform:translate(0, -50%);" />
 								<view wx:if="{{item.list_options}}">
 									<text> 您可以说：
 
@@ -100,7 +102,7 @@
 					<l-input showRow="true" bind:linfocus="keyboardprocess" bind:linblur="keyboardprocess" placeholder="请输入您的问题"
 						value='{{ userMsg }}' name="useMsg" bind:lininput="bindInputValue" label-width="100">
 						<view slot="left" bindtap="changespeaktag">
-							<l-icon name='speak' l-class='iconfont'/>
+							<l-icon name='speak' l-class='iconfont' />
 						</view>
 						<view slot="right">
 							<l-button bg-color='{{!canSend? "gray" : ""}}' shape="circle" bindtap="sendMsg" type="default"
@@ -122,12 +124,12 @@
 						</view>
 						<view slot="right">
 							<view wx:if="{{isios}}">
-							<l-button shape="circle" width="620" bindtap="iostouch">{{record_name}}
-							</l-button>
+								<l-button shape="circle" width="620" bindtap="iostouch">{{record_name}}
+								</l-button>
 							</view>
 							<view wx:else>
-							<l-button shape="circle" width="620" bindtouchstart='touchdown' bindtouchend="touchup">{{record_name}}
-							</l-button>
+								<l-button shape="circle" width="620" bindtouchstart='touchdown' bindtouchend="touchup">{{record_name}}
+								</l-button>
 							</view>
 
 						</view>

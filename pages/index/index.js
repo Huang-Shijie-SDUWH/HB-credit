@@ -125,21 +125,20 @@ Page({
 		that.data.setInter = setInterval(
 			function () {
 				var speak_time = that.data.speak_time + 1;
-				if(that.data.isios==true){
-				that.setData({
-					speak_time: speak_time,
-					record_name: "点击 发送",
-					speakingtag: true
-				});
-			}
-			else{
-				that.setData({
-					speak_time: speak_time,
-					record_name: "松开 发送",
-					speakingtag: true
-				});
+				if (that.data.isios == true) {
+					that.setData({
+						speak_time: speak_time,
+						record_name: "点击 发送",
+						speakingtag: true
+					});
+				} else {
+					that.setData({
+						speak_time: speak_time,
+						record_name: "松开 发送",
+						speakingtag: true
+					});
 
-			}
+				}
 				console.log(speak_time)
 
 				if (that.data.speak_time >= 0 && that.data.speak_time <= 59) {
@@ -176,18 +175,17 @@ Page({
 				icon: "none"
 			})
 		}
-		if(that.data.isios==true){
+		if (that.data.isios == true) {
 			that.setData({
 				speakingtag: false,
 				record_name: "点击 说话",
 				speak_time: "0"
 			})
-		}
-		else{
-		that.setData({
-			speakingtag: false,
-			record_name: "按住 说话",
-			speak_time: "0"
+		} else {
+			that.setData({
+				speakingtag: false,
+				record_name: "按住 说话",
+				speak_time: "0"
 			})
 		}
 
@@ -229,7 +227,7 @@ Page({
 					// console.log(res.data)
 					// console.log(res.data.length)
 					console.log(res.data.byteLength)
-					if (res.data.byteLength < 20000){
+					if (res.data.byteLength < 20000) {
 						wx.showToast({
 							title: '请重新录制',
 							duration: 2000,
@@ -409,11 +407,10 @@ Page({
 		that.wordchange();
 		wx.getSystemInfo({
 			success: (result) => {
-				if(result.platform!="android")
-				{
+				if (result.platform != "android") {
 					that.setData({
 						isios: true,
-						record_name: "点击 发送"
+						record_name: "点击 说话"
 					})
 				}
 			},
@@ -620,10 +617,9 @@ Page({
 	// 苹果系统点击
 	iostouch: function () {
 		var that = this
-		if(that.data.speakingtag==true){
+		if (that.data.speakingtag == true) {
 			that.touchup()
-		}
-		else{
+		} else {
 			that.touchdown()
 		}
 	},
